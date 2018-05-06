@@ -1,11 +1,3 @@
-# eclipse
-bin
-*.launch
-.settings
-.metadata
-.classpath
-.project
-
 # idea
 out
 *.ipr
@@ -17,6 +9,17 @@ out
 build
 .gradle
 
-# other
-eclipse
 run
+CREDITS-fml.txt
+LICENSE-new.txt
+MinecraftForge-Credits.txt
+Paulscode IBXM Library License.txt
+Paulscode SoundSystem CodecIBXM License.txt
+README.txt
+build.gradle
+classes/
+forge-1.12.2-14.23.3.2678-changelog.txt
+gradle.properties
+gradle/
+gradlew
+gradlew.bat

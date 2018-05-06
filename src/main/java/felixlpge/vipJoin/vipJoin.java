@@ -1,15 +1,11 @@
 package felixlpge.vipJoin;
 
-import net.minecraft.init.Blocks;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
-import javax.swing.*;
 import java.io.IOException;
 
 @Mod(modid = vipJoin.MODID, name = vipJoin.NAME, version = vipJoin.VERSION, serverSideOnly = true, acceptableRemoteVersions = "*")
@@ -20,21 +16,34 @@ public class vipJoin {
 
     private static Logger logger;
     private static configLoader configLoader;
+    private static int normalPlayer = 0;
 
-    @EventHandler
+    @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        /*try {
+        try {
             configLoader = new configLoader();
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
         logger = event.getModLog();
     }
 
-    @EventHandler
-    public void joinEvent(PlayerEvent.PlayerLoggedInEvent event) {
-        System.out.println(event.player.getUniqueID());
-        JOptionPane.showMessageDialog(null, "User Login UUID: " + event.player.getUniqueID().toString());
-    }
+    @Mod.EventBusSubscriber(modid = vipJoin.MODID)
+    public static class EventHandler {
+        @SubscribeEvent
+        public static void joinEvent(PlayerEvent.PlayerLoggedInEvent event) {
+            logger.info("UUID of Player trying to login: " + event.player.getUniqueID());
+            logger.info("Player is Vip: " + configLoader.containsUser(event.player.getUniqueID() + ""));
+            if (!configLoader.containsUser(event.player.getUniqueID() + "")) normalPlayer++;
+            else if((normalPlayer + "").equals(configLoader.getConfig().get("players"))){
+                event.setCanceled(true);
+            }
+        }
 
+        @SubscribeEvent
+        public static void leaveEvent(PlayerEvent.PlayerLoggedOutEvent event){
+            if (!configLoader.containsUser(event.player.getUniqueID() + "")) normalPlayer = normalPlayer - 1;
+        }
+
+    }
 }
