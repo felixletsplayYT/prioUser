@@ -1,0 +1,16 @@
+[
+{
+  "modid": "vipjoin",
+  "name": "Vip join",
+  "description": "Hold slots for vips.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["felixlpge"],
+  "credits": "skate702 for this idea. MelanX for being a good forge coder. StackOverflow for being useful.",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
