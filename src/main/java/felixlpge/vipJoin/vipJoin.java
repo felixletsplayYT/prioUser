@@ -1,5 +1,7 @@
 package felixlpge.vipJoin;
 
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -34,9 +36,10 @@ public class vipJoin {
         public static void joinEvent(PlayerEvent.PlayerLoggedInEvent event) {
             logger.info("UUID of Player trying to login: " + event.player.getUniqueID());
             logger.info("Player is Vip: " + configLoader.containsUser(event.player.getUniqueID() + ""));
-            if (!configLoader.containsUser(event.player.getUniqueID() + "")) normalPlayer++;
-            else if((normalPlayer + "").equals(configLoader.getConfig().get("players"))){
-                event.setCanceled(true);
+            if (!configLoader.containsUser(event.player.getUniqueID() + "") && !(normalPlayer >= Integer.parseInt(configLoader.getConfig().get("players")))) normalPlayer++;
+            else if(!configLoader.containsUser(event.player.getUniqueID() + "") && normalPlayer >= Integer.parseInt(configLoader.getConfig().get("players"))){
+                MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+                server.getCommandManager().executeCommand(server, "kick " + event.player.getName() + " Server is full!");
             }
         }
 

@@ -1,26 +1,26 @@
 package felixlpge.vipJoin;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import com.google.gson.Gson;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Scanner;
+import java.util.List;
 
 public class configLoader {
     private final File vips = new File("config/vipJoin/vips.json");
     private final File configFile = new File("config/vipJoin/config.cfg");
     private HashMap<String, String> config;
-    private JsonArray uuids;
+    private Gson gson;
+    private String[] uuids;
     public configLoader() throws IOException {
+        config = new HashMap<>();
+        gson = new Gson();
         if (!configFile.getParentFile().exists()) configFile.getParentFile().mkdirs();
         if (vips.exists()){
-            JsonElement jElement = new JsonParser().parse(new Scanner(vips).useDelimiter("\\Z").next());
-            uuids = jElement.getAsJsonArray();
+            uuids = gson.fromJson(new FileReader(vips), String[].class);
         }else{
-            uuids = new JsonArray();
-            uuids.add("Example user");
+            uuids = new String[]{"01c5ce3e-bf81-4a44-97ae-ebe9d7dd668f", "78a049a7-e802-4b26-a8d7-8021052e637f"};
             saveFile();
         }
         createConfig();
@@ -40,28 +40,28 @@ public class configLoader {
         return config;
     }
 
-    public JsonArray getUuids() {
+    public String[] getUuids() {
         return uuids;
     }
 
     public void addUserToVips(String vip) throws IOException {
-        uuids.add(vip);
+        List<String> list = Arrays.asList(uuids);
+        list.add(vip);
+        uuids = (String[]) list.toArray();
         saveFile();
     }
 
     public boolean containsUser(String uuid){
-        for (JsonElement element : uuids){
-            if (element.getAsString().equals(uuid)) return true;
-        }
-        return false;
+        List<String> list = Arrays.asList(uuids);
+        return list.contains(uuid);
     }
 
     private void saveFile() throws IOException {
         if (vips.exists()) vips.delete();
         vips.createNewFile();
-        //new Gson().toJson(uuids, new FileWriter(vips));
+        String json = gson.toJson(uuids);
         Writer writer = new FileWriter(vips);
-        writer.write(uuids.toString());
+        writer.write(json);
         writer.close();
     }
 
@@ -69,7 +69,6 @@ public class configLoader {
         if (!configFile.exists()){
             configFile.createNewFile();
             BufferedWriter writer = new BufferedWriter(new FileWriter(configFile));
-            writer.write("vip_slots: 1");
             writer.write("players: 20");
             writer.close();
         }
