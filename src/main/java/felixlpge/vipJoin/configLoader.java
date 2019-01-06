@@ -70,6 +70,8 @@ public class configLoader {
             configFile.createNewFile();
             BufferedWriter writer = new BufferedWriter(new FileWriter(configFile));
             writer.write("players: 20");
+            writer.newLine();
+            writer.write("doNotCount: true");
             writer.close();
         }
     }

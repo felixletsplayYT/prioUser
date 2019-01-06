@@ -36,8 +36,8 @@ public class vipJoin {
         public static void joinEvent(PlayerEvent.PlayerLoggedInEvent event) {
             logger.info("UUID of Player trying to login: " + event.player.getUniqueID());
             logger.info("Player is Vip: " + configLoader.containsUser(event.player.getUniqueID() + ""));
-            if (!configLoader.containsUser(event.player.getUniqueID() + "") && !(normalPlayer >= Integer.parseInt(configLoader.getConfig().get("players")))) normalPlayer++;
-            else if(!configLoader.containsUser(event.player.getUniqueID() + "") && normalPlayer >= Integer.parseInt(configLoader.getConfig().get("players"))){
+            if (!(configLoader.containsUser(event.player.getUniqueID() + "") && Boolean.getBoolean(configLoader.getConfig().get("doNotCount")))) normalPlayer++;
+            if(!configLoader.containsUser(event.player.getUniqueID() + "") && normalPlayer > Integer.parseInt(configLoader.getConfig().get("players"))){
                 MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
                 server.getCommandManager().executeCommand(server, "kick " + event.player.getName() + " Server is full!");
             }
@@ -45,7 +45,7 @@ public class vipJoin {
 
         @SubscribeEvent
         public static void leaveEvent(PlayerEvent.PlayerLoggedOutEvent event){
-            if (!configLoader.containsUser(event.player.getUniqueID() + "")) normalPlayer = normalPlayer - 1;
+            if (!(configLoader.containsUser(event.player.getUniqueID() + "") && Boolean.getBoolean(configLoader.getConfig().get("doNotCount")))) normalPlayer = normalPlayer - 1;
         }
 
     }
